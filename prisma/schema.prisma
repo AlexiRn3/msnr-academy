@@ -1,0 +1,70 @@
+// Fichier: prisma/schema.prisma
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+  engineType    = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Rôles utilisateurs : ADMIN (Toi) ou STUDENT (Client)
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  name      String?
+  role      Role       @default(STUDENT)
+  purchases Purchase[] // Historique des achats
+  createdAt DateTime   @default(now())
+}
+
+model Course {
+  id          String    @id @default(cuid())
+  title       String    // Ex: "MSNR Emperor : La direction Weekly/Daily"
+  description String    @db.Text
+  price       Float
+  isPublished Boolean   @default(false) // Pour travailler en brouillon
+  modules     Module[]
+  purchases   Purchase[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Module {
+  id          String   @id @default(cuid())
+  title       String   // Ex: "Module 1: SnR Classique & Hidden Gap"
+  description String?
+  position    Int      // Pour ordonner les modules (1, 2, 3...)
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons     Lesson[]
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  title       String   // Ex: "Vidéo: Le Setup QMX + Trendline"
+  videoUrl    String?  // Lien vers la vidéo (Vimeo/YouTube privé)
+  pdfUrl      String?  // Lien vers tes PDF (zlankator.pdf, etc.)
+  isFree      Boolean  @default(false) // Pour offrir un aperçu gratuit
+  moduleId    String
+  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+}
+
+model Purchase {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, courseId]) // Un utilisateur ne peut pas acheter 2 fois le même cours
+}
