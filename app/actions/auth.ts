@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
+import { redirect as nextRedirect } from "next/navigation";
 
 const AuthSchema = z.object({
   email: z.string().email(),
@@ -50,6 +51,16 @@ export async function registerAction(formData: FormData) {
   }
 }
 
+export async function logoutAction() {
+  const cookieStore = await cookies();
+  
+  // On supprime le cookie proprement
+  cookieStore.delete("userId");
+  
+  // On redirige vers la page de connexion
+  redirect("/login");
+}
+
 export async function loginAction(formData: FormData) {
   const data = Object.fromEntries(formData);
   const parsed = AuthSchema.safeParse({ ...data, name: "LoginUser" });
@@ -85,3 +96,8 @@ export async function loginAction(formData: FormData) {
 
   return { success: true, userId: user.id, role: user.role };
 }
+
+function redirect(arg0: string) {
+    throw new Error("Function not implemented.");
+}
+

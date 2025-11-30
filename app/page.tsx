@@ -58,14 +58,14 @@ export default function Home() {
             transition={{ delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4 justify-center pt-6"
           >
-            <button className="group relative px-8 py-4 bg-white text-black font-bold rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]">
+            <a href="/register" className="group relative px-8 py-4 bg-white text-black font-bold rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)] inline-block">
               <span className="relative z-10 flex items-center gap-2">
                 Join the Academy <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </span>
-            </button>
-            <button className="px-8 py-4 bg-white/5 border border-white/10 text-white font-medium rounded-xl hover:bg-white/10 hover:border-white/20 transition-all">
+            </a>
+            <a href="#pricing" className="px-8 py-4 bg-white/5 border border-white/10 text-white font-medium rounded-xl hover:bg-white/10 hover:border-white/20 transition-all inline-block">
               Discover the program
-            </button>
+            </a>
           </motion.div>
         </div>
 
@@ -95,7 +95,7 @@ export default function Home() {
         </div>
 
         {/* --- PRICING SECTION (NOUVEAU) --- */}
-        <div className="z-10 mt-40 w-full max-w-6xl">
+        <div className="z-10 mt-40 w-full max-w-6xl" id="pricing">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

@@ -1,3 +1,4 @@
+// Fichier: components/DashboardNavbar.tsx
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -11,16 +12,17 @@ import {
   BarChart 
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { logoutAction } from "@/app/actions/auth"; // Import de l'action
 
 interface DashboardNavbarProps {
   role: "ADMIN" | "STUDENT";
+  userName?: string | null; // <--- Nouvelle propriété optionnelle
 }
 
-export default function DashboardNavbar({ role }: DashboardNavbarProps) {
+export default function DashboardNavbar({ role, userName }: DashboardNavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Définition des menus selon le rôle
   const menus = {
     ADMIN: [
       { label: "Overview", href: "/admin", icon: LayoutDashboard },
@@ -38,17 +40,17 @@ export default function DashboardNavbar({ role }: DashboardNavbarProps) {
 
   const currentMenu = menus[role];
 
-  const handleLogout = () => {
-    // Ici, on supprimerait le cookie de session en vrai
-    document.cookie = "userId=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-    router.push("/");
+  const handleLogout = async () => {
+    await logoutAction();
   };
+
+  // Si pas de nom, on affiche un texte par défaut
+  const displayName = userName || (role === "ADMIN" ? "Administrator" : "Student");
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-white/5">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         
-        {/* Logo & Badge */}
         <div className="flex items-center gap-4">
           <Link href="/" className="text-lg font-bold tracking-tighter text-white">
             MSNR <span className="text-blue-500">ACADEMY</span>
@@ -62,7 +64,6 @@ export default function DashboardNavbar({ role }: DashboardNavbarProps) {
           </span>
         </div>
 
-        {/* Navigation */}
         <nav className="hidden md:flex items-center gap-1">
           {currentMenu.map((item) => {
             const isActive = pathname === item.href;
@@ -78,7 +79,6 @@ export default function DashboardNavbar({ role }: DashboardNavbarProps) {
                     {item.label}
                   </span>
                 </div>
-                {/* Petit trait actif */}
                 {isActive && (
                   <motion.div 
                     layoutId="navbar-active"
@@ -91,11 +91,11 @@ export default function DashboardNavbar({ role }: DashboardNavbarProps) {
           })}
         </nav>
 
-        {/* User & Logout */}
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex flex-col items-end">
-            <span className="text-xs font-medium text-white">
-              {role === "ADMIN" ? "Administrator" : "Student Account"}
+            {/* AFFICHE LE NOM ICI */}
+            <span className="text-xs font-bold text-white">
+              {displayName}
             </span>
             <span className="text-[10px] text-gray-500">Online</span>
           </div>

@@ -8,21 +8,16 @@ export default async function StudentLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // 1. Vérification de session
   const user = await getCurrentUser();
 
-  // 2. Pas connecté ? -> Login
   if (!user) {
     redirect("/login");
   }
 
-  // (Optionnel) Si un ADMIN va sur le dashboard étudiant, on peut le laisser passer 
-  // pour qu'il puisse voir ce que voient les élèves.
-
   return (
     <div className="min-h-screen bg-background">
-      {/* Navbar Version Étudiant */}
-      <DashboardNavbar role="STUDENT" />
+      {/* On passe le nom ici */}
+      <DashboardNavbar role="STUDENT" userName={user.name} />
       
       <main className="pt-24 px-6 max-w-7xl mx-auto">
         {children}
