@@ -1,14 +1,13 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, Lock, Mail, Loader2 } from "lucide-react";
+import { ArrowLeft, Lock, Mail, User, Loader2, AlertCircle } from "lucide-react";
+import { registerAction } from "../actions/auth"; // Import de l'action serveur
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null); // Ajout d'état d'erreur
-  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -16,25 +15,19 @@ export default function LoginPage() {
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    const result = await loginAction(formData);
+    const result = await registerAction(formData);
 
     if (result?.error) {
       setError(result.error);
       setIsLoading(false);
-    } else if (result?.success) {
-      // Redirection selon le rôle (Admin ou Student)
-      if (result.role === "ADMIN") {
-        router.push("/admin");
-      } else {
-        router.push("/dashboard"); // Page à créer plus tard pour les étudiants
-      }
     }
+    // Si succès, la redirection est gérée par le serveur (actions/auth.ts)
   }
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-6">
       
-      {/* --- DYNAMIC BACKGROUND (Same style as Home) --- */}
+      {/* --- DYNAMIC BACKGROUND --- */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-grid-white [mask-image:linear-gradient(to_bottom,transparent,black,transparent)] opacity-20" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
@@ -54,7 +47,7 @@ export default function LoginPage() {
         </Link>
       </motion.div>
 
-      {/* --- LOGIN CARD --- */}
+      {/* --- REGISTER CARD --- */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -66,18 +59,45 @@ export default function LoginPage() {
           {/* Card Header */}
           <div className="text-center mb-10">
             <h1 className="text-2xl font-bold tracking-tighter text-white mb-2">
-              MSNR <span className="text-blue-500">ACADEMY</span>
+              Create Account
             </h1>
             <p className="text-sm text-gray-400">
-              Log in to access your dashboard.
+              Join MSNR Academy and start your journey.
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             
+            {/* Error Message */}
+            {error && (
+              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4" />
+                {error}
+              </div>
+            )}
+
+            {/* Name Input */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">
+                Full Name
+              </label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-500 group-focus-within:text-blue-500 transition-colors" />
+                </div>
+                <input
+                  name="name"
+                  type="text"
+                  placeholder="John Doe"
+                  className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all placeholder:text-gray-600"
+                  required
+                />
+              </div>
+            </div>
+
             {/* Email Input */}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label className="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">
                 Email Address
               </label>
@@ -86,6 +106,7 @@ export default function LoginPage() {
                   <Mail className="h-5 w-5 text-gray-500 group-focus-within:text-blue-500 transition-colors" />
                 </div>
                 <input
+                  name="email"
                   type="email"
                   placeholder="name@example.com"
                   className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all placeholder:text-gray-600"
@@ -95,24 +116,21 @@ export default function LoginPage() {
             </div>
 
             {/* Password Input */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between ml-1">
-                <label className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Password
-                </label>
-                <Link href="#" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
-                  Forgot?
-                </Link>
-              </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">
+                Password
+              </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-500 group-focus-within:text-blue-500 transition-colors" />
                 </div>
                 <input
+                  name="password"
                   type="password"
                   placeholder="••••••••"
                   className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all placeholder:text-gray-600"
                   required
+                  minLength={6}
                 />
               </div>
             </div>
@@ -121,13 +139,13 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full relative overflow-hidden bg-white text-black font-bold py-3.5 rounded-xl hover:bg-gray-200 focus:ring-4 focus:ring-white/20 transition-all disabled:opacity-70 disabled:cursor-not-allowed group"
+              className="w-full relative overflow-hidden bg-white text-black font-bold py-3.5 rounded-xl hover:bg-gray-200 focus:ring-4 focus:ring-white/20 transition-all disabled:opacity-70 disabled:cursor-not-allowed group mt-2"
             >
               <div className="flex items-center justify-center gap-2">
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
-                  <span>Log in</span>
+                  <span>Create Account</span>
                 )}
               </div>
             </button>
@@ -136,9 +154,9 @@ export default function LoginPage() {
           {/* Card Footer */}
           <div className="mt-8 pt-6 border-t border-white/5 text-center">
             <p className="text-sm text-gray-500">
-              Not a member yet?{" "}
-              <Link href="#" className="text-white font-medium hover:underline decoration-blue-500 decoration-2 underline-offset-4">
-                Create an account
+              Already have an account?{" "}
+              <Link href="/login" className="text-white font-medium hover:underline decoration-blue-500 decoration-2 underline-offset-4">
+                Log in
               </Link>
             </p>
           </div>
@@ -147,8 +165,4 @@ export default function LoginPage() {
       </motion.div>
     </main>
   );
-}
-
-function loginAction(formData: FormData): Promise<{ error?: string; success?: boolean; role?: string } | null> {
-    throw new Error("Function not implemented.");
 }
