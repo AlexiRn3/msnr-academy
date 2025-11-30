@@ -10,20 +10,20 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
-    // Simulation d'un appel API (à connecter plus tard avec NextAuth/Supabase)
+    // Simulated API call (to be connected later with NextAuth/Supabase)
     setTimeout(() => setIsLoading(false), 2000);
   }
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-6">
       
-      {/* --- BACKGROUND DYNAMIQUE (Même style que la Home) --- */}
+      {/* --- DYNAMIC BACKGROUND (Same style as Home) --- */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-grid-white [mask-image:linear-gradient(to_bottom,transparent,black,transparent)] opacity-20" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
       </div>
 
-      {/* --- BOUTON RETOUR --- */}
+      {/* --- BACK BUTTON --- */}
       <motion.div 
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -33,11 +33,11 @@ export default function LoginPage() {
           <div className="p-2 rounded-full bg-white/5 border border-white/5 group-hover:border-white/10 transition-colors">
             <ArrowLeft className="w-4 h-4" />
           </div>
-          <span>Retour à l'accueil</span>
+          <span>Back to home</span>
         </Link>
       </motion.div>
 
-      {/* --- CARTE DE CONNEXION --- */}
+      {/* --- LOGIN CARD --- */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -46,23 +46,23 @@ export default function LoginPage() {
       >
         <div className="rounded-3xl border border-white/10 bg-neutral-900/50 backdrop-blur-xl p-8 shadow-2xl shadow-black/50">
           
-          {/* Header de la carte */}
+          {/* Card Header */}
           <div className="text-center mb-10">
             <h1 className="text-2xl font-bold tracking-tighter text-white mb-2">
               MSNR <span className="text-blue-500">ACADEMY</span>
             </h1>
             <p className="text-sm text-gray-400">
-              Connectez-vous pour accéder à votre dashboard.
+              Log in to access your dashboard.
             </p>
           </div>
 
-          {/* Formulaire */}
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             
-            {/* Input Email */}
+            {/* Email Input */}
             <div className="space-y-2">
               <label className="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">
-                Adresse Email
+                Email Address
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -70,21 +70,21 @@ export default function LoginPage() {
                 </div>
                 <input
                   type="email"
-                  placeholder="nom@exemple.com"
+                  placeholder="name@example.com"
                   className="w-full bg-black/40 border border-white/10 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all placeholder:text-gray-600"
                   required
                 />
               </div>
             </div>
 
-            {/* Input Password */}
+            {/* Password Input */}
             <div className="space-y-2">
               <div className="flex items-center justify-between ml-1">
                 <label className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  Mot de passe
+                  Password
                 </label>
                 <Link href="#" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
-                  Oublié ?
+                  Forgot?
                 </Link>
               </div>
               <div className="relative group">
@@ -100,7 +100,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Bouton Submit */}
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
@@ -110,18 +110,18 @@ export default function LoginPage() {
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
-                  <span>Se connecter</span>
+                  <span>Log in</span>
                 )}
               </div>
             </button>
           </form>
 
-          {/* Footer de la carte */}
+          {/* Card Footer */}
           <div className="mt-8 pt-6 border-t border-white/5 text-center">
             <p className="text-sm text-gray-500">
-              Pas encore membre ?{" "}
+              Not a member yet?{" "}
               <Link href="#" className="text-white font-medium hover:underline decoration-blue-500 decoration-2 underline-offset-4">
-                Créer un compte
+                Create an account
               </Link>
             </p>
           </div>
