@@ -29,9 +29,9 @@ export default function Navbar() {
           <Link href="/login" className="text-sm font-medium text-white hover:text-gray-300 transition-colors hidden sm:block">
             Login
           </Link>
-          <button className="bg-white text-black px-5 py-2 rounded-full text-sm font-semibold hover:bg-gray-200 transition-all">
+          <Link href="/register" className="bg-white text-black px-5 py-2 rounded-full text-sm font-semibold hover:bg-gray-200 transition-all">
             Get Started
-          </button>
+          </Link>
         </div>
       </div>
     </motion.nav>
