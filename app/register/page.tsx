@@ -3,11 +3,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, Lock, Mail, User, Loader2, AlertCircle } from "lucide-react";
-import { registerAction } from "../actions/auth"; // Import de l'action serveur
+import { registerAction } from "../actions/auth";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -20,20 +22,19 @@ export default function RegisterPage() {
     if (result?.error) {
       setError(result.error);
       setIsLoading(false);
+    } else {
+      router.push("/login?registered=true");
     }
-    // Si succès, la redirection est gérée par le serveur (actions/auth.ts)
   }
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-6">
       
-      {/* --- DYNAMIC BACKGROUND --- */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-grid-white [mask-image:linear-gradient(to_bottom,transparent,black,transparent)] opacity-20" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
       </div>
 
-      {/* --- BACK BUTTON --- */}
       <motion.div 
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -47,7 +48,6 @@ export default function RegisterPage() {
         </Link>
       </motion.div>
 
-      {/* --- REGISTER CARD --- */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -56,8 +56,7 @@ export default function RegisterPage() {
       >
         <div className="rounded-3xl border border-white/10 bg-neutral-900/50 backdrop-blur-xl p-8 shadow-2xl shadow-black/50">
           
-          {/* Card Header */}
-          <div className="text-center mb-10">
+          <div className="text-center mb-8">
             <h1 className="text-2xl font-bold tracking-tighter text-white mb-2">
               Create Account
             </h1>
@@ -66,18 +65,15 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          {/* Form */}
+          {error && (
+            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-400 text-sm">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-5">
             
-            {/* Error Message */}
-            {error && (
-              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4" />
-                {error}
-              </div>
-            )}
-
-            {/* Name Input */}
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">
                 Full Name
@@ -96,7 +92,6 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Email Input */}
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">
                 Email Address
@@ -115,7 +110,6 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Password Input */}
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">
                 Password
@@ -135,7 +129,6 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
@@ -151,7 +144,6 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          {/* Card Footer */}
           <div className="mt-8 pt-6 border-t border-white/5 text-center">
             <p className="text-sm text-gray-500">
               Already have an account?{" "}

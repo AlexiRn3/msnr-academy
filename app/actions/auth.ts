@@ -1,15 +1,14 @@
-// Fichier: app/actions/auth.ts
+// File: app/actions/auth.ts
 "use server";
 
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
-// Schéma de validation
 const AuthSchema = z.object({
-  email: z.email(),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string().email(),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
   name: z.string().optional(),
 });
 
@@ -18,24 +17,24 @@ export async function registerAction(formData: FormData) {
   const parsed = AuthSchema.safeParse(data);
 
   if (!parsed.success) {
-    return { error: "Invalid data. Please check your inputs." };
+    return { error: "Invalid data." };
   }
 
   const { email, password, name } = parsed.data;
 
-  // 1. Vérifier si l'utilisateur existe déjà
+  // 1. Check if user already exists
   const existingUser = await prisma.user.findUnique({
     where: { email },
   });
 
   if (existingUser) {
-    return { error: "User already exists." };
+    return { error: "An account already exists with this email address." };
   }
 
-  // 2. Hasher le mot de passe
+  // 2. Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // 3. Créer l'utilisateur
+  // 3. Create user
   try {
     await prisma.user.create({
       data: {
@@ -45,35 +44,44 @@ export async function registerAction(formData: FormData) {
         role: "STUDENT",
       },
     });
+    return { success: true };
   } catch (error) {
-    return { error: "Something went wrong. Please try again." };
+    return { error: "An error occurred during registration." };
   }
-
-  // 4. Redirection (ou connexion automatique)
-  redirect("/login?registered=true");
 }
 
 export async function loginAction(formData: FormData) {
   const data = Object.fromEntries(formData);
-  const parsed = AuthSchema.safeParse({ ...data, name: "placeholder" }); // Hack rapide pour valider juste email/pass
+  const parsed = AuthSchema.safeParse({ ...data, name: "LoginUser" });
 
-  if (!parsed.success) return { error: "Invalid credentials." };
+  if (!parsed.success) return { error: "Invalid data format." };
 
   const { email, password } = parsed.data;
 
-  // 1. Chercher l'utilisateur
+  // 1. Find user
   const user = await prisma.user.findUnique({
     where: { email },
   });
 
-  if (!user) return { error: "Invalid credentials." };
+  if (!user) {
+    return { error: "No account found with this email address." };
+  }
 
-  // 2. Vérifier le mot de passe
+  // 2. Verify password
   const isValid = await bcrypt.compare(password, user.password);
 
-  if (!isValid) return { error: "Invalid credentials." };
+  if (!isValid) {
+    return { error: "Incorrect password." };
+  }
 
-  // NOTE: Ici, dans une vraie app, on créerait une Session (avec NextAuth ou IronSession).
-  // Pour l'instant, on simule le succès.
+  // 3. Create Session
+  const cookieStore = await cookies();
+  await cookieStore.set("userId", user.id, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * 7, // 1 week
+    path: "/",
+  });
+
   return { success: true, userId: user.id, role: user.role };
 }
