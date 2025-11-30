@@ -41,7 +41,7 @@ export default function DashboardNavbar({ role }: DashboardNavbarProps) {
   const handleLogout = () => {
     // Ici, on supprimerait le cookie de session en vrai
     document.cookie = "userId=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-    router.push("/login");
+    router.push("/");
   };
 
   return (
