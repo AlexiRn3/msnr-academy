@@ -1,13 +1,13 @@
 import { getStudentCourses, getUnpurchasedCourses, getCurrentUser } from "@/lib/data";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Play, Lock, ArrowRight, Check, Sparkles } from "lucide-react";
+import { Play, Lock, Check, Sparkles } from "lucide-react";
+import PurchaseButton from "@/components/PurchaseButton"; // <--- Import du bouton
 
 export default async function MyCoursesPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  // 1. On récupère les deux listes
   const myCourses = await getStudentCourses(user.id);
   const availableUpgrades = await getUnpurchasedCourses(user.id);
 
@@ -16,7 +16,7 @@ export default async function MyCoursesPage() {
   return (
     <div className="space-y-12 pb-20">
       
-      {/* --- SECTION 1 : MES COURS (Seulement si j'en ai) --- */}
+      {/* --- SECTION 1 : MES COURS (Achetés) --- */}
       {hasPurchased && (
         <div className="space-y-6">
           <div className="flex flex-col gap-2">
@@ -73,7 +73,7 @@ export default async function MyCoursesPage() {
         </div>
       )}
 
-      {/* --- SECTION 2 : UPGRADES / OFFRES (Si disponible) --- */}
+      {/* --- SECTION 2 : UPGRADES / OFFRES (Non achetés) --- */}
       {availableUpgrades.length > 0 && (
         <div className="space-y-8">
           <div className="flex flex-col gap-2">
@@ -113,7 +113,7 @@ export default async function MyCoursesPage() {
                   </div>
                 </div>
 
-                {/* Features (Simulation visuelle pour l'instant) */}
+                {/* Features */}
                 <div className="space-y-3 mb-8 flex-1">
                   <div className="flex items-start gap-3 text-sm text-gray-300">
                     <Check className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
@@ -129,10 +129,9 @@ export default async function MyCoursesPage() {
                   </div>
                 </div>
 
-                {/* CTA */}
-                <button className="w-full py-3 rounded-xl bg-white/5 hover:bg-blue-600 text-white text-sm font-bold border border-white/10 hover:border-transparent transition-all flex items-center justify-center gap-2 group">
-                  Unlock Now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
+                {/* BOUTON D'ACHAT SIMULÉ */}
+                <PurchaseButton courseId={course.id} price={course.price} />
+                
               </div>
             ))}
           </div>
