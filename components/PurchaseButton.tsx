@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { createCheckoutSession } from "@/app/actions/payment"; // Changement d'import
-import { Loader2, ArrowRight, Lock } from "lucide-react";
+import { createCheckoutSession } from "@/app/actions/payment"; // On utilise la vraie action Stripe
+import { Loader2, ArrowRight, CreditCard } from "lucide-react";
 
 interface PurchaseButtonProps {
   courseId: string;
@@ -18,7 +18,7 @@ export default function PurchaseButton({ courseId, price }: PurchaseButtonProps)
     const formData = new FormData();
     formData.append("courseId", courseId);
 
-    // L'action va rediriger, donc pas besoin de gérer le succès ici
+    // Cette action va rediriger l'utilisateur vers Stripe
     const result = await createCheckoutSession(formData);
 
     if (result?.error) {
@@ -36,7 +36,7 @@ export default function PurchaseButton({ courseId, price }: PurchaseButtonProps)
       {isLoading ? (
         <>
           <Loader2 className="w-4 h-4 animate-spin" />
-          Redirecting to Stripe...
+          Redirecting...
         </>
       ) : (
         <>

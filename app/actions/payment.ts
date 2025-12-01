@@ -37,9 +37,13 @@ export async function createCheckoutSession(formData: FormData) {
     return { error: "Already purchased" };
   }
 
-  // 3. Créer la session Stripe
+  // 3. Créer la session Stripe (VRAI STRIPE)
   let session;
   try {
+    // NOTE: Stripe refuse les montants < 0.50€.
+    // Pour le test, si le cours est à 0€, on force 1€ (100 centimes) en mode test.
+    const stripeAmount = Math.max(100, Math.round(course.price * 100));
+
     session = await stripe.checkout.sessions.create({
       customer_email: user.email,
       line_items: [
@@ -49,17 +53,18 @@ export async function createCheckoutSession(formData: FormData) {
             product_data: {
               name: course.title,
               description: course.description ? course.description.slice(0, 100) + "..." : undefined,
-              images: course.image ? [course.image] : [],
+              // images: course.image ? [course.image] : [], // Décommentez si vos images sont des URL valides (https)
             },
-            unit_amount: Math.round(course.price * 100), // Stripe est en centimes !
+            unit_amount: stripeAmount, // Prix en centimes (ex: 19700 pour 197€)
           },
           quantity: 1,
         },
       ],
       mode: "payment",
+      // URLs de redirection après paiement (Adaptez l'URL de base si besoin)
       success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/courses?success=1`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/courses?canceled=1`,
-      // Métadonnées cruciales pour le Webhook
+      // Métadonnées CRUCIALES pour le Webhook
       metadata: {
         courseId: course.id,
         userId: user.id,
@@ -70,7 +75,7 @@ export async function createCheckoutSession(formData: FormData) {
     return { error: "Failed to create payment session" };
   }
 
-  // 4. Rediriger vers Stripe
+  // 4. Rediriger vers l'URL de paiement Stripe
   if (session.url) {
     redirect(session.url);
   }
