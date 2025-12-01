@@ -13,7 +13,6 @@ import Link from "next/link";
 export default function Home() {
   return (
     <>
-      <Navbar />
       
       <main className="relative flex min-h-screen flex-col items-center pt-32 pb-20 px-6 overflow-hidden selection:bg-blue-500/30">
         

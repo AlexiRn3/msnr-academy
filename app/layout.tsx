@@ -22,13 +22,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth">
       <body className={`${fontSans.variable} font-sans antialiased bg-background text-text-main`}>
-        {/* Le contenu de la page (ex: page.tsx) */}
         {children}
-        
-        {/* Le Footer s'affichera toujours en bas */}
-        <Footer />
       </body>
     </html>
   );
