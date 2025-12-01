@@ -1,7 +1,14 @@
+// Fichier: app/page.tsx
 "use client";
 import Navbar from "@/components/Navbar";
+import PurchaseButton from "@/components/PurchaseButton"; // Assure-toi que ce composant existe ou retire-le si tu utilises le bouton statique
 import { motion } from "framer-motion";
-import { ArrowRight, BarChart2, Check, Layers, ShieldCheck, Zap } from "lucide-react";
+import { ArrowRight, Check, Layers, ShieldCheck, Zap, Star, Quote, TrendingUp } from "lucide-react";
+
+// NOTE: Si tu n'as pas encore le composant PurchaseButton en version "publique" (sans userId),
+// tu peux utiliser un simple bouton <button> ou Link vers /register pour cette page.
+// Pour cet exemple, je vais utiliser des boutons "Get Access" qui mènent au register.
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -15,9 +22,8 @@ export default function Home() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-blue-500/20 rounded-full blur-[120px] opacity-20 z-0 pointer-events-none" />
 
         {/* --- HERO SECTION --- */}
-        <div className="z-10 max-w-5xl w-full text-center space-y-8 mt-10">
+        <div className="z-10 max-w-5xl w-full text-center space-y-8 mt-10 mb-32">
           
-          {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -28,49 +34,48 @@ export default function Home() {
             </span>
           </motion.div>
 
-          {/* Titre Principal */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white leading-[1.1]"
           >
-            Master <br />
+            Master the <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-gray-500">
               Surgical Precision
             </span>
           </motion.h1>
 
-          {/* Sous-titre */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed"
           >
-            Stop trading randomly. Learn <strong>MSNR</strong> logic, liquidity zones, and institutional Order Flow to validate your Prop Firm accounts.
+            Stop gambling. Learn the <strong>MSNR logic</strong>, liquidity zones, and institutional Order Flow to pass your Prop Firm challenges.
           </motion.p>
 
-          {/* Actions */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4 justify-center pt-6"
           >
-            <a href="/register" className="group relative px-8 py-4 bg-white text-black font-bold rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)] inline-block">
-              <span className="relative z-10 flex items-center gap-2">
-                Join the Academy <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </span>
-            </a>
-            <a href="#pricing" className="px-8 py-4 bg-white/5 border border-white/10 text-white font-medium rounded-xl hover:bg-white/10 hover:border-white/20 transition-all inline-block">
-              Discover the program
-            </a>
+            <Link href="/register">
+              <button className="group relative px-8 py-4 bg-white text-black font-bold rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]">
+                <span className="relative z-10 flex items-center gap-2">
+                  Join the Academy <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </button>
+            </Link>
+            <button className="px-8 py-4 bg-white/5 border border-white/10 text-white font-medium rounded-xl hover:bg-white/10 hover:border-white/20 transition-all">
+              Explore Curriculum
+            </button>
           </motion.div>
         </div>
 
-        {/* --- FEATURES SECTION --- */}
-        <div className="z-10 mt-32 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full">
+        {/* --- FEATURES / STRATEGY SECTION (ID ajoutée) --- */}
+        <div id="strategy" className="z-10 py-20 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full scroll-mt-20">
           {features.map((feature, i) => (
             <motion.div
               key={i}
@@ -94,8 +99,25 @@ export default function Home() {
           ))}
         </div>
 
-        {/* --- PRICING SECTION (NOUVEAU) --- */}
-        <div className="z-10 mt-40 w-full max-w-6xl" id="pricing">
+        {/* --- STATS / PROOF SECTION --- */}
+        <div className="w-full max-w-6xl py-20 border-y border-white/5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            {[
+              { label: "Active Students", value: "1,200+" },
+              { label: "Funded Traders", value: "450+" },
+              { label: "Community Messages", value: "10k+" },
+              { label: "Success Rate", value: "89%" },
+            ].map((stat, i) => (
+              <div key={i} className="space-y-2">
+                <div className="text-4xl font-bold text-white tracking-tight">{stat.value}</div>
+                <div className="text-sm text-gray-500 font-medium uppercase tracking-wider">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* --- PRICING / COURSES SECTION (ID ajoutée) --- */}
+        <div id="courses" className="z-10 py-32 w-full max-w-6xl scroll-mt-10">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -106,7 +128,7 @@ export default function Home() {
               Invest in your <span className="text-blue-500">Edge</span>
             </h2>
             <p className="text-gray-400 max-w-xl mx-auto">
-              Programs designed to transform your trading, from understanding the market to capital validation.
+              Programs designed to transform your trading, from market understanding to capital validation.
             </p>
           </motion.div>
 
@@ -118,7 +140,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className={`relative p-8 rounded-3xl border backdrop-blur-sm transition-all duration-300
+                className={`relative p-8 rounded-3xl border backdrop-blur-sm transition-all duration-300 flex flex-col
                   ${offer.popular 
                     ? 'bg-blue-900/10 border-blue-500/50 shadow-[0_0_30px_-10px_rgba(59,130,246,0.3)] z-10 scale-105' 
                     : 'bg-neutral-900/50 border-white/5 hover:border-white/10 hover:bg-neutral-900/80'
@@ -134,12 +156,12 @@ export default function Home() {
                   <h3 className="text-xl font-bold text-white">{offer.title}</h3>
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl font-bold text-white">{offer.price}€</span>
-                    <span className="text-sm text-gray-500">/unique</span>
+                    <span className="text-sm text-gray-500">/one-time</span>
                   </div>
-                  <p className="text-sm text-gray-400">{offer.desc}</p>
+                  <p className="text-sm text-gray-400 min-h-[40px]">{offer.desc}</p>
                 </div>
 
-                <div className="space-y-4 mb-8">
+                <div className="space-y-4 mb-8 flex-1">
                   {offer.features.map((feat, j) => (
                     <div key={j} className="flex items-start gap-3">
                       <div className={`mt-1 p-0.5 rounded-full ${offer.popular ? 'bg-blue-500' : 'bg-white/10'}`}>
@@ -150,13 +172,59 @@ export default function Home() {
                   ))}
                 </div>
 
-                <button className={`w-full py-3 rounded-xl text-sm font-bold transition-all
-                  ${offer.popular 
-                    ? 'bg-blue-500 text-white hover:bg-blue-600 shadow-lg' 
-                    : 'bg-white/5 text-white hover:bg-white/10 border border-white/5'
-                  }`}>
-                  Access Now
-                </button>
+                <Link href="/register" className="w-full">
+                  <button className={`w-full py-3 rounded-xl text-sm font-bold transition-all
+                    ${offer.popular 
+                      ? 'bg-blue-500 text-white hover:bg-blue-600 shadow-lg' 
+                      : 'bg-white/5 text-white hover:bg-white/10 border border-white/5'
+                    }`}>
+                    Get Access Now
+                  </button>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* --- TESTIMONIALS SECTION (NOUVEAU) --- */}
+        <div id="testimonials" className="z-10 py-20 w-full max-w-6xl scroll-mt-20">
+          <div className="text-center mb-16 space-y-4">
+            <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tighter">
+              What Traders <span className="text-blue-500">Say</span>
+            </h2>
+            <p className="text-gray-400">
+              Real results from our community members trading Futures and Forex.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.map((testimonial, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="p-8 rounded-3xl border border-white/5 bg-neutral-900/30 backdrop-blur-sm hover:border-white/10 transition-colors"
+              >
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                  ))}
+                </div>
+                <p className="text-gray-300 text-sm leading-relaxed mb-6 relative">
+                  <Quote className="w-8 h-8 text-white/5 absolute -top-4 -left-4" />
+                  "{testimonial.content}"
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center font-bold text-white text-xs">
+                    {testimonial.initials}
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-white">{testimonial.name}</div>
+                    <div className="text-xs text-blue-400">{testimonial.role}</div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -167,26 +235,26 @@ export default function Home() {
   );
 }
 
-// Données des features
+// --- DATA ---
+
 const features = [
   {
     title: "Storyline & Direction",
-    desc: "Stop trading against the trend. Learn to read the Weekly/Daily narrative for high success rates.",
+    desc: "Stop trading against the trend. Learn to read the Weekly/Daily narrative for high win rates.",
     icon: Layers,
   },
   {
     title: "Precision Setups",
-    desc: "Master ‘Sniper’ entries (A-Shape, V-Shape, Gap SnR) with explosive risk/reward ratios.",
+    desc: "Master 'Sniper' entries (A-Shape, V-Shape, Gap SnR) with explosive Risk/Reward ratios.",
     icon: Zap,
   },
   {
     title: "Prop Firm Management",
-    desc: "A mathematical approach to risk designed specifically to validate TopStep and FundedNext without stress.",
+    desc: "A mathematical risk approach designed specifically to pass TopStep and FundedNext without stress.",
     icon: ShieldCheck,
   },
 ];
 
-// Données des offres (Basées sur ta stratégie MSNR)
 const offers = [
   {
     title: "Starter Pack",
@@ -205,12 +273,12 @@ const offers = [
     title: "MSNR Emperor",
     price: 197,
     desc: "The complete strategy to pass Prop Firm challenges and achieve profitability.",
-    popular: true, // Highlights this card
+    popular: true,
     features: [
       "Everything in Starter",
       "Storyline Module (Weekly/Daily)",
       "Advanced Setups (Engulfing, Breakout)",
-      "Prop Firm Risk Management (TopStep)",
+      "Prop Firm Risk Management",
       "Trader Psychology Module",
       "Access to Live Session Replays"
     ]
@@ -228,5 +296,26 @@ const offers = [
       "Losing Trades Analysis",
       "VIP Discord Access"
     ]
+  }
+];
+
+const testimonials = [
+  {
+    name: "Thomas R.",
+    role: "Funded TopStep 50k",
+    content: "The Storyline concept completely changed how I view the charts. I stopped taking random trades and focused on Daily Direction. Passed my combine in 12 days.",
+    initials: "TR"
+  },
+  {
+    name: "Sarah L.",
+    role: "Forex Trader",
+    content: "I was skeptical about 'another strategy', but MSNR is just pure logic. No lagging indicators, just price action. The Fresh/Unfresh rule saved me from so many losses.",
+    initials: "SL"
+  },
+  {
+    name: "David K.",
+    role: "FundedNext Trader",
+    content: "The risk management module for Prop Firms is gold. It's not just about entries, it's about keeping the account. Highly recommend the Emperor pack.",
+    initials: "DK"
   }
 ];

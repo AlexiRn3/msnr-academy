@@ -19,9 +19,9 @@ export default function Navbar() {
 
         {/* Menu (Desktop) */}
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
-          <Link href="#" className="hover:text-white transition-colors">The Strategy</Link>
-          <Link href="#" className="hover:text-white transition-colors">Courses</Link>
-          <Link href="#" className="hover:text-white transition-colors">Testimonials</Link>
+          <Link href="#strategy" className="hover:text-white transition-colors">The Strategy</Link>
+          <Link href="#courses" className="hover:text-white transition-colors">Courses</Link>
+          <Link href="#testimonials" className="hover:text-white transition-colors">Testimonials</Link>
         </div>
 
         {/* CTA */}
