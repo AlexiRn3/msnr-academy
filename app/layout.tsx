@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google"; // Import de la police
 import "./globals.css";
-import Footer from "@/components/Footer";
 
 // Configuration de la police
 const fontSans = Plus_Jakarta_Sans({

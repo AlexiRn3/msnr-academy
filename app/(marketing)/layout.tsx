@@ -1,4 +1,3 @@
-// Fichier: app/(marketing)/layout.tsx
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -10,7 +9,9 @@ export default function MarketingLayout({
   return (
     <>
       <Navbar />
-      {children}
+      <main>
+        {children}
+      </main>
       <Footer />
     </>
   );
