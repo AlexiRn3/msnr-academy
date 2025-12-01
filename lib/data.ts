@@ -116,3 +116,19 @@ export async function getStudentGlobalProgress(userId: string) {
     timeSpent: `${hours}h ${minutes}m`
   };
 }
+
+export async function getUnpurchasedCourses(userId: string) {
+  const courses = await prisma.course.findMany({
+    where: {
+      isPublished: true,
+      purchases: {
+        none: {
+          userId: userId
+        }
+      }
+    },
+    orderBy: { price: 'asc' } // On trie par prix croissant (Starter -> Emperor -> Mastery)
+  });
+
+  return courses;
+}
