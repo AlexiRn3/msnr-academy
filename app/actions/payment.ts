@@ -1,48 +1,77 @@
+// Fichier: app/actions/payment.ts
 "use server";
 
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/data";
-import { revalidatePath } from "next/cache";
+import { stripe } from "@/lib/stripe";
+import { redirect } from "next/navigation";
 
-export async function purchaseCourseAction(formData: FormData) {
+export async function createCheckoutSession(formData: FormData) {
   const courseId = formData.get("courseId") as string;
   const user = await getCurrentUser();
 
-  if (!user) {
-    return { error: "You must be logged in to purchase." };
+  if (!user || !user.email) {
+    return { error: "Unauthorized" };
   }
 
-  try {
-    // 1. Vérifier si l'utilisateur a déjà acheté ce cours
-    const existingPurchase = await prisma.purchase.findUnique({
-      where: {
-        userId_courseId: {
-          userId: user.id,
-          courseId: courseId,
-        },
-      },
-    });
+  // 1. Récupérer le cours
+  const course = await prisma.course.findUnique({
+    where: { id: courseId },
+  });
 
-    if (existingPurchase) {
-      return { error: "You already own this course." };
-    }
+  if (!course) {
+    return { error: "Course not found" };
+  }
 
-    // 2. Simuler le paiement (Création de l'achat en BDD)
-    // On enregistre un montant de 0 pour le test
-    await prisma.purchase.create({
-      data: {
+  // 2. Vérifier si déjà acheté
+  const existingPurchase = await prisma.purchase.findUnique({
+    where: {
+      userId_courseId: {
         userId: user.id,
-        courseId: courseId,
-        amount: 0, // Gratuit pour le test
+        courseId: course.id,
+      },
+    },
+  });
+
+  if (existingPurchase) {
+    return { error: "Already purchased" };
+  }
+
+  // 3. Créer la session Stripe
+  let session;
+  try {
+    session = await stripe.checkout.sessions.create({
+      customer_email: user.email,
+      line_items: [
+        {
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: course.title,
+              description: course.description ? course.description.slice(0, 100) + "..." : undefined,
+              images: course.image ? [course.image] : [],
+            },
+            unit_amount: Math.round(course.price * 100), // Stripe est en centimes !
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/courses?success=1`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/courses?canceled=1`,
+      // Métadonnées cruciales pour le Webhook
+      metadata: {
+        courseId: course.id,
+        userId: user.id,
       },
     });
-
-    // 3. Rafraîchir la page pour afficher le cours débloqué
-    revalidatePath("/dashboard/courses");
-    return { success: true };
-
   } catch (error) {
-    console.error("Payment error:", error);
-    return { error: "Transaction failed. Please try again." };
+    console.error("Stripe Error:", error);
+    return { error: "Failed to create payment session" };
+  }
+
+  // 4. Rediriger vers Stripe
+  if (session.url) {
+    redirect(session.url);
   }
 }

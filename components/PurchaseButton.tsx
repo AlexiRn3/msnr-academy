@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { purchaseCourseAction } from "@/app/actions/payment";
+import { createCheckoutSession } from "@/app/actions/payment"; // Changement d'import
 import { Loader2, ArrowRight, Lock } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 interface PurchaseButtonProps {
   courseId: string;
@@ -12,7 +11,6 @@ interface PurchaseButtonProps {
 
 export default function PurchaseButton({ courseId, price }: PurchaseButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const handlePurchase = async () => {
     setIsLoading(true);
@@ -20,13 +18,11 @@ export default function PurchaseButton({ courseId, price }: PurchaseButtonProps)
     const formData = new FormData();
     formData.append("courseId", courseId);
 
-    const result = await purchaseCourseAction(formData);
+    // L'action va rediriger, donc pas besoin de gérer le succès ici
+    const result = await createCheckoutSession(formData);
 
-    if (result.success) {
-      // Petit délai pour voir l'animation de succès (optionnel mais satisfaisant)
-      router.refresh();
-    } else {
-      alert(result.error || "Error during purchase");
+    if (result?.error) {
+      alert(result.error);
       setIsLoading(false);
     }
   };
@@ -35,16 +31,16 @@ export default function PurchaseButton({ courseId, price }: PurchaseButtonProps)
     <button
       onClick={handlePurchase}
       disabled={isLoading}
-      className="w-full py-3 rounded-xl bg-white/5 hover:bg-blue-600 text-white text-sm font-bold border border-white/10 hover:border-transparent transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
+      className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20"
     >
       {isLoading ? (
         <>
           <Loader2 className="w-4 h-4 animate-spin" />
-          Processing...
+          Redirecting to Stripe...
         </>
       ) : (
         <>
-          Unlock Now (0€ Test) <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          Buy Now {price}€ <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </>
       )}
     </button>
