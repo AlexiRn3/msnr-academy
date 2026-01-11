@@ -29,7 +29,7 @@ export default function Home() {
             className="flex justify-center"
           >
             <span className="px-4 py-1.5 text-xs font-semibold tracking-wide border border-blue-500/30 bg-blue-500/10 text-blue-400 rounded-full uppercase shadow-[0_0_10px_rgba(59,130,246,0.2)]">
-              Institutional Trading Concepts
+              MSNR Trading Concept
             </span>
           </motion.div>
 
@@ -51,7 +51,7 @@ export default function Home() {
             transition={{ delay: 0.2 }}
             className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed"
           >
-            Stop gambling. Learn the <strong>MSNR logic</strong>, liquidity zones, and institutional Order Flow to pass your Prop Firm challenges.
+            Stop gambling. Learn the <strong>MSNR logic</strong> and liquidity zones to pass your Prop Firm challenges.
           </motion.p>
 
           <motion.div
@@ -155,7 +155,7 @@ export default function Home() {
                   <h3 className="text-xl font-bold text-white">{offer.title}</h3>
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl font-bold text-white">{offer.price}€</span>
-                    <span className="text-sm text-gray-500">/one-time</span>
+                    <span className="text-sm text-gray-500">/month</span>
                   </div>
                   <p className="text-sm text-gray-400 min-h-[40px]">{offer.desc}</p>
                 </div>
@@ -180,6 +180,60 @@ export default function Home() {
                     Get Access Now
                   </button>
                 </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        <div id="coaches" className="z-10 py-32 w-full max-w-5xl scroll-mt-20">
+          <div className="text-center mb-16 space-y-4">
+            <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tighter">
+              Meet Your <span className="text-blue-500">Mentors</span>
+            </h2>
+            <p className="text-gray-400 max-w-xl mx-auto">
+              We've been exactly where you are. We built this academy to shorten your learning curve by years.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {coaches.map((coach, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: i === 0 ? -20 : 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="group relative overflow-hidden rounded-3xl border border-white/5 bg-neutral-900/50 p-1"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                <div className="relative h-full bg-black/40 rounded-[22px] p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start text-center sm:text-left">
+                  
+                  {/* Avatar / Photo Placeholder */}
+                  <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center shadow-lg shrink-0">
+                     {/* Remplacer par <img src="..." /> si tu as des photos */}
+                     <span className="text-2xl font-bold text-gray-600 group-hover:text-blue-400 transition-colors">
+                        {coach.initials}
+                     </span>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div>
+                      <h3 className="text-2xl font-bold text-white">{coach.name}</h3>
+                      <p className="text-blue-400 font-medium text-sm tracking-wide uppercase">{coach.role}</p>
+                    </div>
+                    
+                    <p className="text-gray-400 text-sm leading-relaxed">
+                      {coach.bio}
+                    </p>
+
+                    <div className="flex items-center justify-center sm:justify-start gap-4 pt-2">
+                       <div className="flex items-center gap-1.5 text-xs font-medium text-gray-500 bg-white/5 px-3 py-1 rounded-full border border-white/5">
+                          <TrendingUp className="w-3 h-3 text-green-500" /> {coach.experience}
+                       </div>
+                       {/* Tu peux ajouter des icônes réseaux sociaux ici */}
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -256,46 +310,65 @@ const features = [
   },
 ];
 
+const coaches = [
+  {
+    name: "Alexi",
+    role: "Founder of MSNR Academy",
+    initials: "SN",
+    experience: "2+ Years Exp.",
+    bio: "Specialized in Institutional Order Flow and MSNR Logic. I help traders stop gambling and start treating trading as a scalable business.",
+  },
+  {
+    name: "Dom'f",
+    role: "Performance Coach & Lead Mentor",
+    initials: "DF",
+    experience: "3+ Years Exp.",
+    bio: "Expert in Risk Management, Trader Psychology and also MSNR Logic. My goal is to help you pass your Prop Firm challenges and keep your funded accounts.",
+  }
+];
+
 const offers = [
   {
-    title: "Starter Pack",
-    price: 97,
-    desc: "The fundamentals to understand market structure and SnR zones.",
+    title: "The Foundation",
+    price: 67,
+    desc: "Understand the 'Why' behind price movement. Perfect for mastering the logic of Malaysian SNR.",
     popular: false,
     features: [
-      "Introduction to MSNR",
-      "Understanding SnR (A-Shape, V-Shape)",
-      "Fresh vs Unfresh Zones",
-      "Community Discord Access",
-      "Email Support"
+      "Introduction to MSNR Philosophy",
+      "The Art of SnR (Line Chart Secrets)",
+      "Fresh vs Unfresh Levels (The 2-Touch Rule)",
+      "Identifying Gap Levels & Shapes",
+      "Full Theory PDF Workbook",
+      "Access to Beginner Community"
     ]
   },
   {
-    title: "MSNR Emperor",
-    price: 197,
-    desc: "The complete strategy to pass Prop Firm challenges and achieve profitability.",
-    popular: true,
+    title: "The SOP Strategy",
+    price: 247,
+    desc: "A complete, rule-based execution system. Learn exactly 'How' and 'When' to enter the market.",
+    popular: true, // This is your Best Seller
     features: [
-      "Everything in Starter",
-      "Storyline Module (Weekly/Daily)",
-      "Advanced Setups (Engulfing, Breakout)",
-      "Prop Firm Risk Management",
-      "Trader Psychology Module",
-      "Access to Live Session Replays"
+      "Everything in The Foundation",
+      "The Storyline Module (MTF Flow)",
+      "The 3 Entry Setups (Low to High Risk)",
+      "King Zulfan's Engulfing (EG/EF) System",
+      "Prop Firm Risk Management Blueprint",
+      "The Roadblock Identification Guide",
+      "Standard Discord Community Access"
     ]
   },
   {
-    title: "Order Flow Mastery",
-    price: 297,
-    desc: "For traders who want to see what institutions actually see.",
+    title: "Mastery Mentorship",
+    price: 497, 
+    desc: "Accelerate your path to consistency with direct feedback and personalized trade reviews.",
     popular: false,
     features: [
-      "Everything in Emperor",
-      "Cumulative Delta (CVD) Analysis",
-      "Footprint & Heatmap Reading",
-      "Group Mentoring Sessions",
-      "Losing Trades Analysis",
-      "VIP Discord Access"
+      "Everything in The SOP Strategy",
+      "Weekly Live Q&A & Market Analysis",
+      "Personalized Trade Corrections",
+      "Advanced Psychology & Mindset Training",
+      "Direct Private Messaging Support",
+      "VIP Inner Circle Discord Access"
     ]
   }
 ];

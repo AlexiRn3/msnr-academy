@@ -11,8 +11,8 @@ const fontSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "MSNR Academy | Trading Institutionnel",
-  description: "Formation avancée sur la stratégie MSNR et l'Order Flow.",
+  title: "MSNR Academy | Trading Strategy",
+  description: "Avanced formation with Malaysian Support & Resistance.",
 };
 
 export default function RootLayout({
