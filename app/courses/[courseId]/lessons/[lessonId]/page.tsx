@@ -3,7 +3,6 @@ import { getCurrentUser } from "@/lib/data";
 import { redirect } from "next/navigation";
 import { markLessonAsCompleted } from "@/app/actions/progress";
 import { CheckCircle, ChevronRight, PlayCircle, Lock } from "lucide-react";
-import Link from "next/link";
 
 export default async function LessonPage({
   params,
@@ -28,21 +27,22 @@ export default async function LessonPage({
 
   if (!course) return redirect("/");
 
-  // 2. Trouver la leçon actuelle et gérer la navigation (Next/Prev)
+  // 2. Trouver la leçon actuelle
   const allLessons = course.modules.flatMap((m) => m.lessons);
   const lessonIndex = allLessons.findIndex((l) => l.id === lessonId);
   const lesson = allLessons[lessonIndex];
 
   if (!lesson) return redirect(`/courses/${courseId}`);
 
-  // 3. Vérifier le verrouillage (Security Check)
+  // 3. Vérifier le verrouillage (CORRECTION DE SÉCURITÉ ICI)
   const previousLesson = allLessons[lessonIndex - 1];
   if (previousLesson) {
     const isPrevCompleted = await prisma.userProgress.findUnique({
         where: { userId_lessonId: { userId: user.id, lessonId: previousLesson.id } }
     });
-    if (!isPrevCompleted && !lesson.isFree) {
-        // Si on essaie de tricher avec l'URL, on renvoie à la leçon précédente
+    
+    // On vérifie strictement si la leçon précédente est marquée comme "isCompleted: true"
+    if ((!isPrevCompleted || !isPrevCompleted.isCompleted) && !lesson.isFree) {
         return redirect(`/courses/${courseId}/lessons/${previousLesson.id}`);
     }
   }
@@ -56,19 +56,19 @@ export default async function LessonPage({
   });
   const isCompleted = !!userProgress?.isCompleted;
 
-  // Fonction pour l'embed video (réutilisée)
   const getEmbedUrl = (url: string | null) => {
     if (!url) return null;
     const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
     const youtubeMatch = url.match(youtubeRegex);
     if (youtubeMatch && youtubeMatch[1]) return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
-    return url; // Fallback
+    return url;
   };
 
   return (
-    <div className="flex flex-col max-w-5xl mx-auto pb-20">
+    // CORRECTION VISUELLE : On retire "max-w-5xl mx-auto" du conteneur parent
+    <div className="flex flex-col pb-20">
       
-      {/* VIDEO PLAYER */}
+      {/* VIDEO PLAYER : Il prend maintenant 100% de la largeur disponible */}
       <div className="w-full aspect-video bg-black border-b border-white/10 relative">
         {lesson.videoUrl ? (
           <iframe
@@ -85,20 +85,19 @@ export default async function LessonPage({
         )}
       </div>
 
-      {/* CONTENU & BOUTONS */}
-      <div className="p-8 space-y-8">
+      {/* CONTENU TEXTE : Lui, on le centre et on le contraint en largeur pour la lisibilité */}
+      <div className="max-w-5xl mx-auto w-full p-8 space-y-8">
         
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <h1 className="text-2xl font-bold text-white">{lesson.title}</h1>
           
-          {/* Action Button */}
           <form action={async () => {
               "use server";
               await markLessonAsCompleted(lesson.id, course.id);
               if (nextLesson) {
                   redirect(`/courses/${course.id}/lessons/${nextLesson.id}`);
               } else {
-                redirect(`/courses/${course.id}`); // Fin du cours
+                redirect(`/courses/${course.id}`);
               }
           }}>
              <button 
