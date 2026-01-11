@@ -1,7 +1,7 @@
 // File: app/admin/courses/[courseId]/page.tsx
 import { prisma } from "@/lib/db";
 import { createModule } from "@/app/actions/modules";
-import { ArrowLeft, Plus, Video } from "lucide-react";
+import { ArrowLeft, Plus, Video, Edit } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import EditCourseForm from "./EditCourseForm"; // <--- Import du composant
@@ -54,17 +54,24 @@ export default async function CourseEditPage({ params }: { params: Promise<{ cou
           </div>
 
           <div className="space-y-4">
-             {course.modules.map((module) => (
-                <div key={module.id} className="p-4 rounded-xl border border-white/10 bg-black/20">
-                   <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-bold text-white">{module.title}</h3>
-                      <span className="text-xs text-gray-500">{module.lessons.length} lessons</span>
-                   </div>
-                   <div className="text-xs text-gray-600 italic">
-                      Drag and drop lessons here (coming soon)
-                   </div>
+             {/* Remplacement dans app/admin/courses/[courseId]/page.tsx */}
+            {course.modules.map((module) => (
+            <div key={module.id} className="flex items-center justify-between p-4 rounded-xl border border-white/10 bg-black/20">
+                <div className="flex-1">
+                    <h3 className="font-bold text-white">{module.title}</h3>
+                    <span className="text-xs text-gray-500">{module.lessons.length} lessons</span>
                 </div>
-             ))}
+                
+                <div className="flex items-center gap-2">
+                    {/* Lien vers la page de gestion du module */}
+                    <Link href={`/admin/courses/${course.id}/modules/${module.id}`}>
+                    <button className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white text-xs font-bold rounded-lg transition-colors border border-white/5">
+                        <Edit className="w-3 h-3" /> Edit Content
+                    </button>
+                    </Link>
+                </div>
+            </div>
+            ))}
 
              {/* Formulaire Module: 
                 Pour éviter l'erreur TypeScript ici sans faire un autre fichier, 
