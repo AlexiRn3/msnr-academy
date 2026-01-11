@@ -58,7 +58,7 @@ export async function logoutAction() {
   cookieStore.delete("userId");
   
   // On redirige vers la page de connexion
-  redirect("/login");
+  nextRedirect("/login");
 }
 
 export async function loginAction(formData: FormData) {
