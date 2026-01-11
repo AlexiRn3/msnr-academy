@@ -2,9 +2,10 @@ import { prisma } from "@/lib/db";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CheckCircle, Lock, PlayCircle, Video } from "lucide-react";
+import { CheckCircle, PlayCircle, Video } from "lucide-react";
+import LessonItem from "@/components/LessonItem"; // <--- Import 1
+import PurchaseButton from "@/components/PurchaseButton"; // <--- Import 2
 
-// On force le rendu dynamique pour avoir les infos à jour (prix, modules...)
 export const dynamic = "force-dynamic";
 
 type Props = {
@@ -14,7 +15,6 @@ type Props = {
 export default async function CourseIdPage(props: Props) {
   const params = await props.params;
   
-  // 1. Récupérer le cours avec ses modules et leçons
   const course = await prisma.course.findUnique({
     where: { id: params.courseId },
     include: {
@@ -33,7 +33,6 @@ export default async function CourseIdPage(props: Props) {
     return redirect("/");
   }
 
-  // 2. Vérifier si l'utilisateur est connecté et s'il a acheté le cours
   const cookieStore = await cookies();
   const userId = cookieStore.get("userId")?.value;
   
@@ -89,10 +88,8 @@ export default async function CourseIdPage(props: Props) {
                 </button>
               </Link>
             ) : (
-              // Ici vous mettrez votre composant d'achat plus tard, pour l'instant un lien simple
-              <button className="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/25">
-                Enroll Now
-              </button>
+              // Utilisation du nouveau bouton fonctionnel
+              <PurchaseButton courseId={course.id} /> 
             )}
           </div>
         </div>
@@ -124,29 +121,14 @@ export default async function CourseIdPage(props: Props) {
                    <span>{module.title}</span>
                    <span className="text-xs text-gray-500 font-normal">{module.lessons.length} lessons</span>
                 </div>
-                <div className="divide-y divide-white/5">
+                <div>
                   {module.lessons.map((lesson) => (
-                    <div key={lesson.id} className="px-6 py-3 flex items-center justify-between hover:bg-white/5 transition-colors group">
-                      <div className="flex items-center gap-3">
-                         <div className={`p-1.5 rounded-full ${lesson.isFree || hasPurchased ? "bg-blue-500/20 text-blue-400" : "bg-gray-700/50 text-gray-500"}`}>
-                           <PlayCircle className="w-4 h-4" />
-                         </div>
-                         <span className="text-sm text-gray-300 group-hover:text-white transition-colors">
-                           {lesson.title}
-                         </span>
-                      </div>
-                      
-                      {/* Status Icon */}
-                      <div>
-                        {lesson.isFree || hasPurchased ? (
-                           <span className="text-xs font-bold text-blue-400 py-1 px-2 rounded bg-blue-500/10">
-                             {hasPurchased ? "Start" : "Free Preview"}
-                           </span>
-                        ) : (
-                           <Lock className="w-4 h-4 text-gray-600" />
-                        )}
-                      </div>
-                    </div>
+                    // Utilisation du composant LessonItem pour l'accordéon
+                    <LessonItem 
+                      key={lesson.id} 
+                      lesson={lesson} 
+                      isLocked={!lesson.isFree && !hasPurchased} 
+                    />
                   ))}
                 </div>
               </div>

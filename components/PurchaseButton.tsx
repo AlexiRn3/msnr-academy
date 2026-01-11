@@ -1,48 +1,43 @@
 "use client";
 
+import { createCheckoutSession } from "@/app/actions/payment";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { createCheckoutSession } from "@/app/actions/payment"; // On utilise la vraie action Stripe
-import { Loader2, ArrowRight, CreditCard } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface PurchaseButtonProps {
   courseId: string;
-  price: number;
 }
 
-export default function PurchaseButton({ courseId, price }: PurchaseButtonProps) {
+export default function PurchaseButton({ courseId }: PurchaseButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const handlePurchase = async () => {
+  const handleEnroll = async () => {
     setIsLoading(true);
-    
-    const formData = new FormData();
-    formData.append("courseId", courseId);
-
-    // Cette action va rediriger l'utilisateur vers Stripe
-    const result = await createCheckoutSession(formData);
-
-    if (result?.error) {
-      alert(result.error);
-      setIsLoading(false);
+    try {
+        const result = await createCheckoutSession(courseId);
+        if (result.url) {
+            router.push(result.url); // Redirection vers Stripe ou Dashboard
+        } else if (result.error) {
+            alert(result.error);
+            setIsLoading(false);
+        }
+    } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+        alert("Something went wrong");
     }
   };
 
   return (
-    <button
-      onClick={handlePurchase}
+    <button 
+      onClick={handleEnroll}
       disabled={isLoading}
-      className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20"
+      className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/25 disabled:opacity-50 flex items-center justify-center gap-2"
     >
-      {isLoading ? (
-        <>
-          <Loader2 className="w-4 h-4 animate-spin" />
-          Redirecting...
-        </>
-      ) : (
-        <>
-          Buy Now {price}€ <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </>
-      )}
+      {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+      Enroll Now
     </button>
   );
 }

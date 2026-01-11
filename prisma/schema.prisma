@@ -19,6 +19,7 @@ model User {
   name      String?
   password  String
   role      Role           @default(STUDENT)
+  stripeCustomer StripeCustomer?
   purchases Purchase[]
   progress  UserProgress[] // Nouveau : Suivi de progression
   createdAt DateTime       @default(now())
@@ -84,4 +85,15 @@ model Purchase {
   createdAt DateTime @default(now())
 
   @@unique([userId, courseId])
+}
+
+model StripeCustomer {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  stripeCustomerId String   @unique
+  
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
