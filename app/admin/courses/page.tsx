@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { Plus, MoreVertical, Edit, Trash } from "lucide-react";
 import { prisma } from "@/lib/db";
+import CourseActions from "./CourseActions";
 
 export default async function AdminCoursesPage() {
   // Fetch courses from the database
@@ -55,9 +56,7 @@ export default async function AdminCoursesPage() {
               </div>
 
               {/* Action Menu (Mockup) */}
-              <button className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-white hover:text-black transition-colors">
-                <MoreVertical className="w-4 h-4" />
-              </button>
+              <CourseActions courseId={course.id} isPublished={course.isPublished} />
 
               {/* Course Cover Placeholder */}
               <div className="h-40 w-full bg-gradient-to-b from-white/5 to-transparent" />

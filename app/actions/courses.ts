@@ -86,3 +86,15 @@ export async function updateCourse(courseId: string, formData: FormData) {
   revalidatePath("/admin/courses");
   return { success: true };
 }
+
+export async function deleteCourse(courseId: string) {
+  try {
+    await prisma.course.delete({
+      where: { id: courseId },
+    });
+    revalidatePath("/admin/courses");
+    return { success: true };
+  } catch (error) {
+    return { error: "Failed to delete course." };
+  }
+}
