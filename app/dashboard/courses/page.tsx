@@ -60,9 +60,10 @@ export default async function MyCoursesPage() {
                   </div>
 
                   <div className="pt-4 flex items-center justify-between border-t border-white/5">
-                    <Link href={`/dashboard/courses/${course.id}`} className="w-full">
+                    <Link href={`/courses/${course.id}`} className="w-full">
                       <button className="w-full py-2 flex items-center justify-center gap-2 rounded-lg bg-white text-black hover:bg-blue-500 hover:text-white transition-all text-sm font-bold">
-                        <Play className="w-3 h-3" /> Continue
+                        <Play className="w-3 h-3" /> 
+                        {course.progress > 0 ? "Continue" : "Start"} 
                       </button>
                     </Link>
                   </div>
