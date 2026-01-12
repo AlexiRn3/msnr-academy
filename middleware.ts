@@ -1,37 +1,24 @@
-// Fichier: middleware.ts
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export function middleware(request: NextRequest) {
-  // 1. Récupérer le cookie de session
-  const userId = request.cookies.get("userId")?.value;
-  
-  // 2. Définir les chemins actuels
-  const path = request.nextUrl.pathname;
+// Définir les routes publiques (qui ne nécessitent pas de connexion)
+const isPublicRoute = createRouteMatcher([
+  "/", 
+  "/login(.*)", 
+  "/register(.*)", 
+  "/api/webhook" // Important pour Stripe plus tard
+]);
 
-  // 3. LOGIQUE DE REDIRECTION
-
-  // Cas A : L'utilisateur est CONNECTÉ et tente d'accéder aux pages publiques (Login/Register)
-  // -> On le renvoie vers le Dashboard (ou Admin selon votre logique, ici Dashboard par défaut)
-  const isAuthPage = path.startsWith("/login") || path.startsWith("/register");
-  
-  if (userId && isAuthPage) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+export default clerkMiddleware(async (auth, req) => {
+  if (!isPublicRoute(req)) {
+    await auth.protect();
   }
+});
 
-  // Cas B : L'utilisateur n'est PAS connecté et tente d'accéder aux pages protégées (Admin/Dashboard)
-  // -> On le renvoie vers Login
-  const isProtectedPage = path.startsWith("/dashboard") || path.startsWith("/admin");
-
-  if (!userId && isProtectedPage) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  // Sinon, on laisse passer
-  return NextResponse.next();
-}
-
-// Configuration : Le middleware ne s'active que sur les chemins pertinents (pour ne pas ralentir les images, api, etc.)
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*", "/login", "/register"],
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
 };
