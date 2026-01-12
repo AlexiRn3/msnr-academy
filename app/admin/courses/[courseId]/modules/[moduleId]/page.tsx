@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { ArrowLeft, Video, Plus, Edit, Trash } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ModuleTitleForm } from "./_components/ModuleTitleForm";
 
 // On force le rendu dynamique pour éviter les soucis de cache
 export const dynamic = "force-dynamic";
@@ -55,11 +56,6 @@ export default async function ModuleEditPage(props: Props) {
             {/* Formulaire simple pour renommer (Server Action à créer si besoin, ou utiliser un client component comme pour Course) */}
             <div className="space-y-2">
               <label className="text-xs font-bold text-gray-400 uppercase">Module Title</label>
-              <input 
-                defaultValue={moduleData.title}
-                className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                disabled // Pour l'instant en lecture seule, on fera l'action d'update après si vous validez
-              />
               <p className="text-xs text-gray-500">To rename the module, we will add an action later.</p>
             </div>
           </div>
